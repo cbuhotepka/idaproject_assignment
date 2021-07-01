@@ -2,6 +2,12 @@
 
 {% block content %}
     <h1>{{ picture.name }}</h1>
-    <img src="{% url 'pic_exchange:get_pic' picture.pk %}" />
+    <img src="{{ picture.get_pic.url }}" />
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Resize" />
+    </form>
     <p><a href="{% url 'pic_exchange:index' %}">Back</a></p>
+    <p><a href="{% url 'pic_exchange:delete' picture.pk %}">Delete</a></p>
 {% endblock %}

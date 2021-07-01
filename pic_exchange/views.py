@@ -1,26 +1,14 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.urls.base import reverse_lazy
 from django.utils.translation import templatize
 from django.shortcuts import get_object_or_404
-from django.views.generic import View
+from django.views.generic import View, DeleteView
 from django.http import HttpResponse
 from .models import Picture
-from .forms import PicForm
+from .forms import PicForm, ResizeForm
 
 # Create your views here.
-def get_pic(request, pk):
-    pic = get_object_or_404(Picture, pk=pk)
-    response = HttpResponse()
-    response['Content-Type'] = pic.content_type
-    if pic.sized_picture:
-        response['Content-Length'] = len(pic.sized_picture)
-        response.write(pic.sized_picture)
-    else:
-        response['Content-Length'] = len(pic.original_picture)
-        response.write(pic.original_picture)
-    return response
-
-
 class IndexView(View):
     template_name = 'pic_exchange/index.html'
 
@@ -37,11 +25,24 @@ class PictureDetailedView(View):
 
     def get(self, request, pk):
         pic = get_object_or_404(Picture, pk=pk)
+        form = ResizeForm
         context = {
             'picture': pic,
+            'form': form,
         }
         return render(request, self.template_name, context)
 
+    def post(self, request, pk):
+        pic = get_object_or_404(Picture, pk=pk)
+        form = ResizeForm(request.POST)
+        if not form.is_valid():
+            context = {'picture':pic, 'form': form}
+            return render(request, self.template_name, context)
+        cleaned = form.cleaned_data
+        pic.resize(cleaned['width'] or None, cleaned['height'] or None)
+        pic.save()
+        return redirect('pic_exchange:detailed', pic.pk)
+        
 
 class PictureCreateView(View):
     template_name = 'pic_exchange/pic_create.html'
@@ -60,4 +61,10 @@ class PictureCreateView(View):
             return render(request, self.template_name, context)
         picture = form.save()
         return redirect('pic_exchange:detailed', picture.pk)
+
+
+class PictureDeleteView(DeleteView):
+    model = Picture
+    success_url = reverse_lazy('pic_exchange:index')
+    template_name = 'pic_exchange/pic_delete.html'
 
