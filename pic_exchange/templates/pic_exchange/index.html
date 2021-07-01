@@ -2,4 +2,12 @@
 
 {% block content %}
     <h1>All pictures</h1>
+    {% if pictures %}
+    <ul>
+        {% for picture in pictures %}
+        {% endfor %}
+    </ul>
+    {% else %}
+        <h4>No pictures yet</h4>
+    {% endif %}
 {% endblock %}
