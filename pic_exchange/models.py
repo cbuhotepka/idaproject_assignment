@@ -16,7 +16,7 @@ class Picture(models.Model):
     sized_picture = models.ImageField(upload_to='site_media', null=True, editable=True)
     content_type = models.CharField(max_length = 256, blank=True)
 
-    max_width = 1024
+    max_width = 2048
     max_height = max_width
     max_size = max_width * max_height
 
@@ -31,10 +31,8 @@ class Picture(models.Model):
         image = Image.open(self.original_picture)
         ratio = self.original_width/self.original_height
         if not height or (width and width >= int(height*ratio)):
-            print('\n\n______________\nRESIZING', ratio, width)
             image = image.resize((width, int(width/ratio)))
         else:
-            print('\n\n______________\nRESIZING HEIGHT', ratio, height)
             image = image.resize((int(height*ratio), height))
 
         pic_io = BytesIO()
