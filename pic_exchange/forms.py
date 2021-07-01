@@ -3,7 +3,8 @@ from .models import Picture
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 class PicForm(forms.ModelForm):
-    original_picture = forms.FileField(required=False)
+    original_picture = forms.FileField(required=False, label='Picture')
+    upload_field_name = 'original_picture'
 
     class Meta:
         model = Picture

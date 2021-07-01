@@ -6,11 +6,12 @@
     <ul>
         {% for picture in pictures %}
         <li>
-            <a href="">{{ picture.name }}</a>
+            <a href="{% url 'pic_exchange:detailed' picture.pk %}">{{ picture.name }}</a>
         </li>
         {% endfor %}
     </ul>
     {% else %}
         <h4>No pictures yet</h4>
     {% endif %}
+    <a href="{% url 'pic_exchange:create' %}">Upload new picture</a>
 {% endblock %}

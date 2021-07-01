@@ -2,4 +2,6 @@
 
 {% block content %}
     <h1>{{ picture.name }}</h1>
+    <img src="{% url 'pic_exchange:get_pic' picture.pk %}" />
+    <p><a href="{% url 'pic_exchange:index' %}">Back</a></p>
 {% endblock %}

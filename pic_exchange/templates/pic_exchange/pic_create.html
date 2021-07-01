@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Creating a picture</h1>
+    <form method='POST' enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create" />
+        <a href="{% url 'pic_exchange:index' %}">Back</a>
+    </form>
+{% endblock %}
